@@ -27,3 +27,5 @@ echo "GRANT ALL PRIVILEGES ON powermail.* TO powermail@localhost IDENTIFIED BY '
 mysqladmin -uroot reload
 mysqladmin -uroot refresh
 
+## remove apache default page with simple name
+echo  "Web-Apps server"> /var/www/html/index.html 
