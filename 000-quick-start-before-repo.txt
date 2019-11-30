@@ -1,0 +1,26 @@
+# Copy Paste on Debian 10.x to get updates and start setup of webapp based on apache2-php7.3 and mariadb
+
+##disable ipv6 as most time not required
+sysctl -w net.ipv6.conf.all.disable_ipv6=1
+sysctl -w net.ipv6.conf.default.disable_ipv6=1
+
+## copy old source for safety
+/bin/cp -pR /etc/apt/sources.list /usr/local/src/old-sources.list-`date +%s`
+## set new repo source
+echo "" >  /etc/apt/sources.list
+echo "deb http://httpredir.debian.org/debian buster main contrib non-free" >> /etc/apt/sources.list
+echo "deb http://httpredir.debian.org/debian buster-updates main contrib non-free" >> /etc/apt/sources.list
+echo "deb http://security.debian.org/ buster/updates main contrib non-free" >> /etc/apt/sources.list
+
+apt-get update; apt-get -y upgrade ;
+apt-get -y install vim screen wget telnet openssh-server mc iptraf iputils-ping git sudo curl elinks 
+apt-get -y install xfsprogs debconf-utils pwgen net-tools ca-certificates apache2 php mariadb-server
+
+
+#Disable vim automatic visual mode using mouse, useful for copy from vi edit mode
+echo "\"set mouse=a/g\"" > ~/.vimrc
+echo "syntax on" >> ~/.vimrc
+
+
+mkdir /opt ; cd /opt ; git clone https://github.com/deependhulla/basic-webapp-server-debian10.git
+
