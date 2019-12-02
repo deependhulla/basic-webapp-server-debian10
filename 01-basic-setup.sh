@@ -66,6 +66,8 @@ apt-get -y install nginx-full
 /etc/init.d/nginx stop
 systemctl disable nginx > /dev/null 2>&1
 
+echo "" >  /var/www/html/index.nginx-debian.html
+
 apt-get -y install python3-certbot-apache python3-certbot-nginx
 
 
