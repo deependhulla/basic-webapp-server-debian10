@@ -1,5 +1,20 @@
 #!/bin/sh
 
+
+## sample
+###HOSTNAME=powermail.domainname.com
+###IPADDR=192.168.1.1
+
+###HOSTNAME=powermail.domainname.com
+###IPADDR=192.168.1.1
+
+
+
+hostname $HOSTNAME
+echo "$IPADDR   $HOSTNAME" >> /etc/hosts
+echo $HOSTNAME > /etc/hostname
+
+
 #build rc.local as it not there by default in debian 9.x
 /bin/cp -pR /etc/rc.local /usr/local/old-rc.local-`date +%s` 2>/dev/null
 echo "#!/bin/bash" >/etc/rc.local;
@@ -98,3 +113,21 @@ systemctl restart  systemd-timedated systemd-timesyncd
 
 ## remove apache default page with simple name
 echo  "Web-Apps server"> /var/www/html/index.html 
+
+
+
+
+##  To have features like CentOS for Bash
+echo "" >> /etc/bash.bashrc
+echo "alias cp='cp -i'" >> /etc/bash.bashrc
+echo "alias l.='ls -d .* --color=auto'" >> /etc/bash.bashrc
+echo "alias ll='ls -l --color=auto'" >> /etc/bash.bashrc
+echo "alias ls='ls --color=auto'" >> /etc/bash.bashrc
+echo "alias mv='mv -i'" >> /etc/bash.bashrc
+echo "alias rm='rm -i'" >> /etc/bash.bashrc
+
+#Load bashrc
+
+source /etc/bash.bashrc
+
+
