@@ -1,5 +1,11 @@
 #!/bin/sh
 
+#build rc.local as it not there by default in debian 9.x
+/bin/cp -pR /etc/rc.local /usr/local/old-rc.local-`date +%s` 2>/dev/null
+echo "#!/bin/bash" >/etc/rc.local;
+echo "sysctl -w net.ipv6.conf.all.disable_ipv6=1" >>/etc/rc.local
+echo "sysctl -w net.ipv6.conf.default.disable_ipv6=1" >> /etc/rc.local
+chmod 755 /etc/rc.local
 
 
 ##http://www.microhowto.info/howto/make_the_configuration_of_iptables_persistent_on_debian.html
@@ -39,23 +45,44 @@ a2enmod proxy_http > /dev/null 2>&1
 a2ensite default-ssl > /dev/null 2>&1	
 a2ensite proxy_http > /dev/null 2>&1	
 
+# ngnix is install for icdn or pass perforance or load-blaance if needed
+/etc/init.d/apache2 stop
+apt-get -y install nginx-full 
+/etc/init.d/nginx stop
+systemctl disable nginx > /dev/null 2>&1
+
+apt-get -y install python3-certbot-apache python3-certbot-nginx
+
+
+## works only on Intel and not on ARM -- Tokudb is good for Archive Databases
+apt-get -y install mariadb-plugin-tokudb
+
+/etc/init.d/mysql stop
+/etc/init.d/mysql start
+
+## in case one need mouse pointer on console-terminal for copy paste
+#apt-get -y install gpm
+
+## keep etc version via git
+apt-get -y install etckeeper
+
+
+# install GeoIP for blocking contry spefic IPs
+apt-get install geoip-bin geoip-database
+
 ## setup admin password which is like root , and useful via phpmyadmin
-
-
 MYSQLPASSVPOP=`pwgen -c -1 8`
 echo $MYSQLPASSVPOP > /usr/local/src/mysql-admin-pass
 echo "mysql admin password in /usr/local/src/mysql-admin-pass"
-
 echo "GRANT ALL PRIVILEGES ON *.* TO admin@localhost IDENTIFIED BY '$MYSQLPASSVPOP'" with grant option | mysql -uroot
 mysqladmin -uroot reload
 mysqladmin -uroot refresh
 
-
+## set up for India Time IST
 echo "NTP=0.arch.pool.ntp.org 1.arch.pool.ntp.org 2.arch.pool.ntp.org 3.arch.pool.ntp.org" >> /etc/systemd/timesyncd.conf
 timedatectl set-timezone 'Asia/Kolkata'
 timedatectl set-ntp true
 timedatectl status
-
 
 ### changing timezone to Asia Kolkata
 sed -i "s/;date.timezone =/date\.timezone \= \'Asia\/Kolkata\'/" /etc/php/7.3/apache2/php.ini
